@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AOS Beauty - American Outlet Store</title>
+
+  <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cream: '#FAF7F5',
+              surface: '#FFFFFF',
+              charcoal: '#1F1A1C',
+              muted: '#7A6F6D',
+              rose: '#C98A75',
+              blush: '#F4E2DE',
+              gold: '#D4AF37',
+              border: '#E8DEDC'
+            }
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #FAF7F5;
+      color: #1F1A1C;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-editorial {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    
+    /* Animación fade-in-up para tarjetas de catálogo */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 24px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Animación de vuelo hacia el carrito */
+    @keyframes flyToTarget {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      50% { transform: translate(var(--dx-half), var(--dy-half)) scale(0.6); opacity: 0.8; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(0.15); opacity: 0; }
+    }
+    .flying-element {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      border-radius: 9999px;
+      box-shadow: 0 10px 25px -5px rgba(201, 138, 117, 0.5);
+      animation: flyToTarget 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Ocultar barra de scroll pero mantener funcionalidad */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Shimmer Skeleton Screen (Estilo Apple, CLS = 0) */
+    @keyframes shimmerAnim {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, #ede7e3 25%, #f7f4f2 50%, #ede7e3 75%);
+      background-size: 200% 100%;
+      animation: shimmerAnim 1.8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .transition-apple {
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-brand-cream text-brand-charcoal selection:bg-brand-blush selection:text-brand-charcoal">
+
+  <!-- ===================================================================== -->
+  <!-- 1. CABECERA DINÁMICA CON SCROLL (Hide/Reveal)                         -->
+  <!-- ===================================================================== -->
+  <header id="mainHeader" class="fixed top-0 left-0 right-0 z-40 transition-transform duration-300 ease-in-out bg-white/95 backdrop-blur-md border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Zona 1: Logo AOS y Subtítulo -->
+      <a href="#" class="flex items-center gap-2 group shrink-0">
+        <span class="text-2xl font-bold tracking-tight text-brand-charcoal font-editorial group-hover:text-brand-rose transition-colors">AOS</span>
+        <div class="hidden sm:block border-l border-brand-border pl-2">
+          <span class="text-xs uppercase tracking-widest text-brand-rose font-medium block">Beauty</span>
+          <span class="text-[10px] text-brand-muted block leading-none">Cochabamba</span>
+        </div>
+      </a>
+
+      <!-- Barra de Búsqueda con Dictado por Voz y Auto-enfoque -->
+      <div id="searchContainer" class="flex-1 max-w-md mx-2 transition-all duration-300 hidden md:flex items-center relative">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Buscar perfumes, sérums, labiales..." 
+          class="w-full pl-9 pr-10 py-1.5 text-xs bg-brand-cream/80 border border-brand-border rounded-full focus:outline-none focus:border-brand-rose focus:ring-1 focus:ring-brand-rose transition-all"
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-muted absolute left-3 pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <button 
+          id="voiceSearchBtn" 
+          type="button" 
+          title="Buscar por dictado de voz" 
+          class="absolute right-2 p-1 text-brand-muted hover:text-brand-rose transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+        </button>
+      </div>
+
+      <!-- Zona de Acciones Rápidas -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <!-- Toggle búsqueda móvil prominente -->
+        <button 
+          id="toggleMobileSearch" 
+          aria-label="Abrir buscador" 
+          title="Buscar productos"
+          class="md:hidden p-2 text-brand-charcoal hover:text-brand-rose bg-brand-cream/80 border border-brand-border rounded-full transition-colors flex items-center justify-center shrink-0 shadow-2xs"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-charcoal"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+
+        <!-- Botón Ubicación Google Maps (compacto en móvil) -->
+        <a 
+          href="https://maps.app.goo.gl/HH8DaPBkpaTXBfsb8" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          title="Ver ubicación: Calle Brasil e/ Antzana, Cochabamba"
+          class="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 text-xs font-medium text-brand-charcoal hover:text-brand-rose border border-brand-border hover:border-brand-rose rounded-full transition-colors bg-white shadow-2xs shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-rose shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="hidden md:inline">Cochabamba</span>
+        </a>
+
+        <!-- Botón Favoritos -->
+        <button 
+          id="btnOpenFavorites" 
+          title="Mis Favoritos"
+          aria-label="Mis Favoritos"
+          class="relative p-2 text-brand-charcoal hover:text-brand-rose transition-colors flex items-center justify-center rounded-full hover:bg-brand-blush/40 shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <span id="favCountBadge" class="hidden absolute top-0.5 right-0.5 w-4 h-4 text-[10px] font-bold bg-brand-rose text-white rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Botón Comparar -->
+        <button 
+          id="btnOpenComparator" 
+          title="Comparar Productos"
+          aria-label="Comparar Productos"
+          class="relative p-2 text-brand-charcoal hover:text-brand-rose transition-colors flex items-center justify-center rounded-full hover:bg-brand-blush/40 shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          <span id="compCountBadge" class="hidden absolute top-0.5 right-0.5 w-4 h-4 text-[10px] font-bold bg-brand-gold text-white rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Botón Carrito en Header -->
+        <button 
+          id="btnOpenCartHeader" 
+          title="Mi Pedido / Carrito"
+          aria-label="Mi Pedido / Carrito"
+          class="relative p-2 text-brand-charcoal hover:text-brand-rose transition-colors flex items-center justify-center rounded-full hover:bg-brand-blush/40 shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span id="headerCartBadge" class="hidden absolute top-0.5 right-0.5 w-4 h-4 text-[10px] font-bold bg-brand-charcoal text-white rounded-full flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Barra de búsqueda móvil desplegable -->
+    <div id="mobileSearchBar" class="hidden px-4 pb-3 pt-2 border-t border-brand-border bg-white md:hidden">
+      <div class="relative flex items-center">
+        <input 
+          type="text" 
+          id="searchInputMobile" 
+          placeholder="Buscar cosméticos o fragancias..." 
+          class="w-full pl-9 pr-10 py-2 text-sm bg-brand-cream border border-brand-border rounded-full focus:outline-none focus:border-brand-rose"
+        />
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-muted absolute left-3 pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <button id="voiceSearchBtnMobile" type="button" class="absolute right-3 p-1 text-brand-muted hover:text-brand-rose">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Espacio para compensar el header fijo -->
+  <div class="h-16"></div>
+
+  <!-- Banner Informativo Superior -->
+  <div class="bg-brand-blush/60 border-b border-brand-border text-center py-1.5 px-4 text-xs text-brand-charcoal font-medium">
+    <span class="inline-flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-brand-rose animate-pulse"></span>
+      <span id="txtAlertaEnvios">Envíos a toda Bolivia · Atención exclusiva en Cochabamba</span>
+    </span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. HERO BOUTIQUE                                                     -->
+  <!-- ===================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-white border border-brand-border rounded-2xl p-6 sm:p-10 shadow-sm">
+      <div class="space-y-4">
+        <div class="text-xs uppercase tracking-widest text-brand-rose font-semibold">American Outlet Store</div>
+        <h1 class="text-3xl sm:text-5xl font-editorial font-bold tracking-tight text-brand-charcoal text-balance">
+          Cosmética de Lujo & Fragancias Auténticas
+        </h1>
+        <p class="text-sm sm:text-base text-brand-muted leading-relaxed" id="txtHeroDescripcion">
+          Descubre nuestra selecta colección de artículos de belleza importados. Precios en Bolivianos y atención en Cochabamba.
+        </p>
+        <div class="pt-2 flex flex-wrap items-center gap-3">
+          <a href="#catalogo" class="px-5 py-2.5 text-xs font-semibold uppercase tracking-wider bg-brand-charcoal text-white hover:bg-brand-rose rounded-lg transition-colors shadow-sm">
+            Explorar Catálogo
+          </a>
+          <a 
+            href="https://maps.app.goo.gl/HH8DaPBkpaTXBfsb8" 
+            target="_blank" 
+            class="px-4 py-2.5 text-xs font-semibold text-brand-charcoal border border-brand-border hover:border-brand-rose rounded-lg transition-colors flex items-center gap-1.5"
+          >
+            <i data-lucide="map-pin" class="w-4 h-4 text-brand-rose"></i>
+            Calle Brasil e/ Antzana
+          </a>
+        </div>
+      </div>
+      <div class="relative overflow-hidden rounded-xl border border-brand-border aspect-[16/10] bg-brand-cream">
+        <img 
+          src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=1000&q=80" 
+          alt="AOS Beauty Collection" 
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        <div class="absolute bottom-3 left-4 right-4 text-white text-xs font-medium">
+          Cochabamba, Bolivia · Envíos departamentales y casillero
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. FILTROS Y CONTROLES DE CATEGORÍAS                                  -->
+  <!-- ===================================================================== -->
+  <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+    <div class="flex items-center justify-between gap-4 border-b border-brand-border pb-4 flex-wrap">
+      <div>
+        <h2 class="text-2xl font-editorial font-bold text-brand-charcoal">Colección Disponible</h2>
+        <p class="text-xs text-brand-muted">Productos en stock con entrega en Cochabamba</p>
+      </div>
+
+      <!-- Segmented Buttons por Categoría -->
+      <div id="categoryTabs" class="flex items-center gap-1 p-1 bg-white border border-brand-border rounded-xl overflow-x-auto no-scrollbar max-w-full">
+        <button data-cat="todas" class="cat-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-charcoal text-white transition-colors whitespace-nowrap">
+          Todas
+        </button>
+        <button data-cat="Maquillaje" class="cat-btn px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand-charcoal rounded-lg transition-colors whitespace-nowrap">
+          Maquillaje
+        </button>
+        <button data-cat="Cuidado Facial" class="cat-btn px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand-charcoal rounded-lg transition-colors whitespace-nowrap">
+          Cuidado Facial
+        </button>
+        <button data-cat="Fragancias" class="cat-btn px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand-charcoal rounded-lg transition-colors whitespace-nowrap">
+          Fragancias
+        </button>
+        <button data-cat="Cuidado Capilar" class="cat-btn px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand-charcoal rounded-lg transition-colors whitespace-nowrap">
+          Cuidado Capilar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 4. GRID DE PRODUCTOS CON BADGES PROMOCIONALES                         -->
+  <!-- ===================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1">
+    <!-- BANNER DE ERROR DE CONEXIÓN CON GOOGLE SHEETS -->
+    <div id="dbErrorBanner" class="hidden mb-8 p-5 bg-rose-50 border-2 border-rose-300 rounded-2xl shadow-xs">
+      <div class="flex items-start gap-3.5">
+        <div class="p-2.5 bg-rose-100 text-rose-700 rounded-xl shrink-0">
+          <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <div class="flex-1 space-y-2 text-xs text-rose-950">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <h3 class="font-bold text-base text-rose-900">
+              Error de conexión con la base de datos de Google Sheets
+            </h3>
+            <button onclick="location.reload()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-sans text-xs font-semibold transition-colors cursor-pointer shadow-xs">
+              Reintentar Conexión
+            </button>
+          </div>
+          <div class="p-3 bg-white/95 border border-rose-200 rounded-xl font-mono text-xs text-rose-800 break-words" id="dbErrorMsg">
+            Cargando detalle del error...
+          </div>
+          <div class="space-y-1 text-rose-900 pt-1">
+            <p class="font-bold">¿Cómo solucionar este error en Google Apps Script?</p>
+            <ol class="list-decimal pl-5 space-y-1 text-xs">
+              <li>Abre <strong>script.google.com</strong> en tu proyecto de Apps Script y revisa el archivo <code>Codigo.gs</code>.</li>
+              <li>Verifica que los 3 IDs en <code>CONFIG</code> (<code>UI_SPREADSHEET_ID</code>, <code>STOCK_SPREADSHEET_ID</code>, <code>OTROS_SPREADSHEET_ID</code>) correspondan a tus hojas de Google Sheets.</li>
+              <li>Asegúrate de que las hojas estén compartidas con tu cuenta o con permisos de lectura.</li>
+              <li>En el menú de funciones de Apps Script, selecciona y ejecuta <strong><code>testConexionHojas</code></strong> para ver el diagnóstico exacto de cada una de tus 3 hojas.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"></div>
+
+    <div id="emptyState" class="hidden text-center py-16">
+      <h3 class="text-lg font-bold text-brand-charcoal">No se encontraron productos</h3>
+      <p class="text-xs text-brand-muted mt-1">Prueba con otra palabra clave o categoría.</p>
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 5. RECOMENDADOS EN EL BODY (BASADOS EN FAVORITOS Y COMPARADOR)         -->
+  <!-- ===================================================================== -->
+  <section id="bodyRecommendedSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div class="bg-gradient-to-r from-white via-brand-cream to-white border border-brand-border rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+      <div class="flex items-center justify-between border-b border-brand-border pb-3">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-brand-rose font-semibold flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Selección Personalizada
+          </span>
+          <h3 class="text-xl font-editorial font-bold text-brand-charcoal mt-0.5">Recomendados para ti</h3>
+        </div>
+        <span class="text-[11px] text-brand-muted hidden sm:inline">Basado en tus preferencias</span>
+      </div>
+      <div id="bodyRecommendedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 6. CARRITO FLOTANTE Y DINÁMICO (DRAGGABLE LIBRE)                      -->
+  <!-- ===================================================================== -->
+  <div 
+    id="draggableCartBtn" 
+    class="fixed bottom-6 right-6 z-40 cursor-grab active:cursor-grabbing select-none"
+    style="touch-action: none;"
+    role="button"
+    aria-label="Abrir pedido o carrito"
+  >
+    <div 
+      id="openCartBtn"
+      class="flex items-center gap-3 bg-brand-charcoal text-white hover:bg-brand-rose px-4 py-3 rounded-full shadow-2xl transition-all duration-200 border-2 border-brand-gold/40 group cursor-pointer"
+    >
+      <div class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 group-hover:scale-110 transition-transform"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span id="cartCountBadge" class="absolute -top-2.5 -right-2.5 bg-brand-rose text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-brand-charcoal shadow-sm">
+          0
+        </span>
+      </div>
+      <div class="text-left pr-1">
+        <span class="text-[10px] uppercase tracking-wider text-brand-blush block leading-none font-semibold">Mi Carrito</span>
+        <span id="cartSubtotalBadge" class="text-xs font-mono font-bold tabular-nums">Bs. 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 7. MODAL DE PRODUCTO DETALLADO (IMAGEN AGRANDADA Y CARRUSEL)          -->
+  <!-- ===================================================================== -->
+  <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-white/95 backdrop-blur-md border border-brand-border rounded-2xl max-w-2xl w-full max-h-[94vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- SECCIÓN 1: Imágenes Agrandada (Clic abre Carrusel Fullscreen) -->
+      <div class="relative bg-brand-cream border-b border-brand-border h-72 sm:h-96 overflow-hidden flex items-center justify-center group select-none">
+        <img 
+          id="modalProductImage" 
+          src="" 
+          alt="" 
+          class="w-full h-full object-cover transition-transform duration-300 cursor-pointer group-hover:scale-102"
+          title="Toca para ver en pantalla completa"
+        />
+        <button 
+          id="closeProductModalBtn" 
+          class="absolute top-3 right-3 p-2 bg-white/80 hover:bg-white text-brand-charcoal rounded-full shadow-md transition-colors z-10"
+        >
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- SECCIÓN 2: Descripción y Badges Promocionales -->
+      <div class="relative p-6 flex-1 overflow-y-auto space-y-4">
+        <button id="modalPrevProductBtn" title="Anterior" class="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-brand-charcoal rounded-full shadow-md">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <button id="modalNextProductBtn" title="Siguiente" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-brand-charcoal rounded-full shadow-md">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+
+        <div class="px-8 space-y-3">
+          <span id="modalProductCategory" class="text-xs uppercase tracking-widest text-brand-rose font-semibold block"></span>
+          <h3 id="modalProductName" class="text-2xl font-editorial font-bold text-brand-charcoal"></h3>
+          
+          <div class="space-y-0.5 pt-1">
+            <div id="modalProductBadge" class="text-xs font-bold text-brand-rose uppercase"></div>
+            <div class="text-2xl font-mono font-bold text-brand-charcoal tabular-nums" id="modalProductPrice"></div>
+          </div>
+          <p id="modalProductDescription" class="text-xs sm:text-sm text-brand-muted leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: Barra de acciones con botón "+ 'precio'" -->
+      <div class="p-4 bg-brand-cream border-t border-brand-border flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button id="modalFavBtn" class="p-2.5 bg-white border border-brand-border hover:border-brand-rose text-brand-charcoal rounded-xl transition-colors">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+          </button>
+          <button id="modalCompBtn" class="p-2.5 bg-white border border-brand-border hover:border-brand-gold text-brand-charcoal rounded-xl transition-colors">
+            <i data-lucide="scale" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <button 
+          id="modalAddToCartBtn" 
+          class="flex-1 py-3 px-5 bg-brand-charcoal text-white hover:bg-brand-rose font-semibold text-sm uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
+        >
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span id="modalAddPriceText">+ Bs. 0</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VISOR PANTALLA COMPLETA CON CARRUSEL TÁCTIL -->
+  <div id="fullscreenImageViewer" class="fixed inset-0 z-[60] hidden bg-black/95 backdrop-blur-md flex flex-col items-center justify-center select-none">
+    <div class="absolute top-4 right-4 flex items-center gap-2 z-20">
+      <button id="fsCloseBtn" class="p-2.5 bg-white/20 hover:bg-red-500 text-white rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <button id="fsPrevBtn" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full z-20">
+      <i data-lucide="chevron-left" class="w-6 h-6"></i>
+    </button>
+    <button id="fsNextBtn" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full z-20">
+      <i data-lucide="chevron-right" class="w-6 h-6"></i>
+    </button>
+    <div id="fsTouchContainer" class="max-w-[92vw] max-h-[85vh] p-4 flex items-center justify-center">
+      <img id="fullscreenImageEl" src="" class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl" />
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 8. CAJÓN DE CARRITO Y CHECKOUT (SIN NOMBRE/CELULAR NI COSTOS ENVÍO)  -->
+  <!-- ===================================================================== -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+    <div id="cartBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"></div>
+    <div class="absolute right-0 top-0 bottom-0 max-w-md w-full bg-white shadow-2xl flex flex-col z-10">
+      
+      <!-- Encabezado del Carrito -->
+      <div class="p-4 border-b border-brand-border flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-brand-rose"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <h3 class="font-bold text-lg text-brand-charcoal">Mi Pedido</h3>
+        </div>
+        <button id="closeCartBtn" aria-label="Cerrar pedido" class="p-1.5 text-brand-muted hover:text-brand-charcoal transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+
+      <!-- Resumen y Checkout (sin cajas de Nombre ni Celular) -->
+      <div class="p-4 bg-brand-cream border-t border-brand-border space-y-3">
+        
+        <!-- Cupón de Descuento -->
+        <div class="space-y-1">
+          <label class="text-[11px] font-semibold text-brand-muted uppercase">Cupón de Descuento</label>
+          <div class="flex items-center gap-2">
+            <input 
+              type="text" 
+              id="couponInput" 
+              placeholder="Ej: BELLEZA10" 
+              class="flex-1 px-3 py-1.5 text-xs bg-white border border-brand-border rounded-lg uppercase font-mono"
+            />
+            <button id="applyCouponBtn" class="px-3 py-1.5 text-xs font-semibold bg-brand-charcoal text-white rounded-lg">Aplicar</button>
+          </div>
+          <div id="couponMessage" class="text-[11px] hidden font-medium"></div>
+        </div>
+
+        <!-- Modalidad de Envío sin Montos -->
+        <div class="space-y-1">
+          <label class="text-[11px] font-semibold text-brand-muted uppercase">Modalidad de Envío</label>
+          <select id="shippingSelect" class="w-full px-3 py-2 text-xs bg-white border border-brand-border rounded-lg">
+            <option value="tienda">Recoger en Tienda (Calle Brasil e/ Antzana)</option>
+            <option value="delivery_cba">Delivery Cochabamba Cercado</option>
+            <option value="departamental">Envío Departamental (Flota / Transporte)</option>
+            <option value="casillero">Casillero</option>
+          </select>
+        </div>
+
+        <!-- ÚNICAMENTE ENVÍO DEPARTAMENTAL PIDE CAMPOS OPCIONALES: DESTINO, NOMBRE, CELULAR, TRANSPORTADORA -->
+        <div id="departamentalFields" class="hidden space-y-2 text-xs bg-brand-cream/80 p-2.5 rounded-xl border border-brand-border">
+          <span class="text-[11px] font-bold text-brand-rose block">Datos de Envío Departamental (Opcionales)</span>
+          <input 
+            type="text" 
+            id="depDestinoInput" 
+            placeholder="Destino: Ciudad / Municipio / Localidad (opcional)" 
+            class="w-full px-3 py-1.5 bg-white border border-brand-border rounded-lg focus:outline-none focus:border-brand-rose"
+          />
+          <input 
+            type="text" 
+            id="depNombreInput" 
+            placeholder="Nombre completo de quien recoge (opcional)" 
+            class="w-full px-3 py-1.5 bg-white border border-brand-border rounded-lg focus:outline-none focus:border-brand-rose"
+          />
+          <input 
+            type="tel" 
+            id="depCelularInput" 
+            placeholder="Teléfono / Celular de contacto (opcional)" 
+            class="w-full px-3 py-1.5 bg-white border border-brand-border rounded-lg focus:outline-none focus:border-brand-rose"
+          />
+          <input 
+            type="text" 
+            id="depTransporteInput" 
+            placeholder="Empresa de transporte o flota preferida (opcional)" 
+            class="w-full px-3 py-1.5 bg-white border border-brand-border rounded-lg focus:outline-none focus:border-brand-rose"
+          />
+        </div>
+
+        <!-- Desglose de Totales (Sin costos de envío) -->
+        <div class="space-y-1 pt-2 border-t border-brand-border text-xs">
+          <div class="flex justify-between text-brand-muted">
+            <span>Subtotal:</span>
+            <span id="summarySubtotal" class="font-mono tabular-nums">Bs. 0</span>
+          </div>
+          <div id="summaryDiscountRow" class="hidden flex justify-between text-emerald-700 font-medium">
+            <span>Descuento aplicado:</span>
+            <span id="summaryDiscount" class="font-mono tabular-nums">-Bs. 0</span>
+          </div>
+          <div class="flex justify-between text-base font-bold text-brand-charcoal pt-1 border-t border-brand-border">
+            <span>Total a Pagar:</span>
+            <span id="summaryTotal" class="font-mono tabular-nums text-brand-rose">Bs. 0</span>
+          </div>
+        </div>
+
+        <!-- Botón de Pago con Código QR -->
+        <div class="pt-2 flex items-center gap-3">
+          <div class="text-center shrink-0">
+            <button id="openQRZoomBtn" type="button" class="relative border border-brand-gold rounded-lg p-1 bg-white">
+              <img src="https://i.postimg.cc/4xnJJwqj/IMG-20260919-WA0005.jpg" alt="QR" class="w-12 h-12 object-cover rounded" />
+              <span class="absolute -top-1 -right-1 bg-brand-gold text-white p-0.5 rounded-full"><i data-lucide="zoom-in" class="w-3 h-3"></i></span>
+            </button>
+            <span class="text-[9px] text-brand-muted block mt-0.5">QR Pago</span>
+          </div>
+
+          <button id="checkoutSubmitBtn" class="flex-1 py-3.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>FINALIZAR PEDIDO</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE ZOOM DE CÓDIGO QR -->
+  <div id="qrModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-brand-border pb-2">
+        <h4 class="font-bold text-sm text-brand-charcoal">Código QR de Transferencia</h4>
+        <button id="closeQRModalBtn" class="p-1 text-brand-muted hover:text-brand-charcoal"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="bg-brand-cream p-3 rounded-xl border border-brand-border flex items-center justify-center">
+        <img src="https://i.postimg.cc/4xnJJwqj/IMG-20260919-WA0005.jpg" alt="QR" class="max-w-full max-h-72 rounded-lg" />
+      </div>
+      <a href="https://i.postimg.cc/4xnJJwqj/IMG-20260919-WA0005.jpg" target="_blank" download class="w-full py-2 text-xs font-semibold bg-brand-charcoal text-white hover:bg-brand-rose rounded-lg transition-colors flex items-center justify-center gap-1.5">
+        <i data-lucide="download" class="w-4 h-4"></i> Descargar QR
+      </a>
+    </div>
+  </div>
+
+  <!-- MODAL RESUMEN DE PEDIDO -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full space-y-5 shadow-2xl text-center">
+      <div class="w-14 h-14 mx-auto bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center border-2 border-emerald-200">
+        <i data-lucide="check-circle" class="w-8 h-8"></i>
+      </div>
+      <div>
+        <span class="text-xs uppercase tracking-widest text-emerald-700 font-semibold">¡Pedido Registrado con Éxito!</span>
+        <h3 id="orderIdText" class="text-2xl font-mono font-bold text-brand-charcoal mt-1">AOS-0000-000</h3>
+      </div>
+      <div id="orderReceiptBox" class="text-left bg-brand-cream border border-brand-border rounded-xl p-3 text-xs space-y-1 font-mono"></div>
+      <div class="space-y-2">
+        <button id="btnDownloadReceiptPDF" class="w-full py-2.5 text-xs font-semibold bg-brand-charcoal text-white hover:bg-brand-rose rounded-xl transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4"></i> Imprimir Recibo
+        </button>
+        <button id="closeSuccessModalBtn" class="w-full py-2 text-xs text-brand-muted hover:text-brand-charcoal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE FAVORITOS -->
+  <div id="favoritesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div id="favBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="p-4 sm:p-5 border-b border-brand-border flex items-center justify-between bg-brand-cream/40">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-brand-rose"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <h3 class="text-base sm:text-lg font-bold text-brand-charcoal">Mis Favoritos (<span id="favModalCount">0</span>)</h3>
+        </div>
+        <button id="closeFavoritesBtn" aria-label="Cerrar favoritos" class="p-1.5 text-brand-muted hover:text-brand-charcoal rounded-full hover:bg-brand-blush/40 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="favoritesList" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- MODAL COMPARADOR DE PRODUCTOS -->
+  <div id="comparatorModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div id="compBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="p-4 sm:p-5 border-b border-brand-border flex items-center justify-between bg-brand-cream/40">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-brand-gold"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          <h3 class="text-base sm:text-lg font-bold text-brand-charcoal">Comparador de Productos (<span id="compModalCount">0</span>/4)</h3>
+        </div>
+        <button id="closeComparatorBtn" aria-label="Cerrar comparador" class="p-1.5 text-brand-muted hover:text-brand-charcoal rounded-full hover:bg-brand-blush/40 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="comparatorContent" class="flex-1 overflow-x-auto p-4 sm:p-6"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER LIMPIO (SIN BOTÓN WHATSAPP OFICIAL) -->
+  <footer class="bg-white border-t border-brand-border py-8 mt-12 text-xs text-brand-muted">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="font-editorial text-base font-bold text-brand-charcoal block">AOS Beauty · American Outlet Store</span>
+        <span>Calle Brasil entre Calle Antzana, Cochabamba, Bolivia</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://maps.app.goo.gl/HH8DaPBkpaTXBfsb8" target="_blank" class="hover:text-brand-rose flex items-center gap-1.5 font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-brand-rose"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Ver Ubicación en Google Maps</span>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT MODULAR                                                    -->
+  <!-- ===================================================================== -->
+  <script>
+    function safeCreateIcons() {
+      try {
+        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+          lucide.createIcons();
+        }
+      } catch (e) {
+        console.warn('Lucide icons fallback:', e);
+      }
+    }
+
+    const DEFAULT_CATALOG = [
+      {
+        id: 'AOS-P01',
+        nombre: 'Aura Hydrate · Sérum de Ácido Hialurónico Puro',
+        categoria: 'Cuidado Facial',
+        precio_bs: 185,
+        precio_antes: 220,
+        etiqueta_promocional: 'precio antes',
+        stock: 14,
+        descripcion: 'Sérum hidratante intensivo multimolecular para restaurar la barrera cutánea y aportar luminosidad.',
+        imagenes: ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80'],
+        activo: true,
+        destacado: true
+      },
+      {
+        id: 'AOS-P02',
+        nombre: 'Aura Velvet Matte Lipstick · Nude Rosé',
+        categoria: 'Maquillaje',
+        precio_bs: 110,
+        etiqueta_promocional: 'NUEVO PRODUCTO',
+        stock: 22,
+        descripcion: 'Labial mate aterciopelado de larga duración con textura ultraligera enriquecida con aceite de jojoba.',
+        imagenes: ['https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800&q=80'],
+        activo: true,
+        destacado: true
+      },
+      {
+        id: 'AOS-P03',
+        nombre: 'Aura Flore · Eau de Parfum Artesanal 100ml',
+        categoria: 'Fragancias',
+        precio_bs: 340,
+        precio_antes: 390,
+        etiqueta_promocional: 'cupon de descuento de regalo',
+        stock: 8,
+        descripcion: 'Fragancia exclusiva con notas de rosa de damasco, pera dulce, ámbar suave y jazmín silvestre.',
+        imagenes: ['https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&q=80'],
+        activo: true,
+        destacado: true
+      },
+      {
+        id: 'AOS-P04',
+        nombre: 'Aurora Botanica · Crema Hidratante Pétalos de Rosa',
+        categoria: 'Cuidado Facial',
+        precio_bs: 165,
+        precio_antes: 195,
+        etiqueta_promocional: 'delivery gratis',
+        stock: 18,
+        descripcion: 'Crema reparadora ultra emoliente con agua de rosas orgánica, manteca de karité y vitamina E.',
+        imagenes: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80'],
+        activo: true,
+        destacado: true
+      }
+    ];
+
+    const Store = {
+      productos: DEFAULT_CATALOG.slice(),
+      configUI: {},
+      cupones: [
+        { codigo: 'BELLEZA10', tipo: 'PORCENTAJE', valor: 10, minimo_compra_bs: 100, fecha_caducidad: '2026-12-31', activo: true }
+      ],
+      carrito: JSON.parse(localStorage.getItem('aos_cart') || '[]'),
+      favoritos: JSON.parse(localStorage.getItem('aos_favs') || '[]'),
+      comparador: JSON.parse(localStorage.getItem('aos_comp') || '[]'),
+      cuponAplicado: null,
+      tipoEnvio: 'tienda',
+      currentCategory: 'todas',
+      searchTerm: '',
+      modalProductIndex: 0,
+      fsImageIndex: 0,
+
+      saveCart() {
+        localStorage.setItem('aos_cart', JSON.stringify(this.carrito));
+        UI.renderCartBadge();
+        UI.renderCartItems();
+      },
+      saveFavs() {
+        localStorage.setItem('aos_favs', JSON.stringify(this.favoritos));
+        UI.renderFavBadge();
+        UI.renderBodyRecommended();
+      },
+      saveComp() {
+        localStorage.setItem('aos_comp', JSON.stringify(this.comparador));
+        UI.renderCompBadge();
+        UI.renderBodyRecommended();
+      }
+    };
+
+    // =========================================================================
+    // CONFIGURACIÓN DE CONEXIÓN CON GOOGLE APPS SCRIPT
+    // =========================================================================
+    // Si usas Index.html en GITHUB PAGES o servidor externo, pega tu URL de Web App aquí:
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMSfu5EcaShzStNMkUnrMA3lnRrSgzsxlaPlEg2mxhJT-8uAI1zdwHWnY6-T0h1eAz/exec';
+
+    const GAS = {
+      isGAS: typeof google !== 'undefined' && google.script && google.script.run,
+
+      async fetchTiendaData() {
+        // 1. Modo nativo dentro de Google Apps Script:
+        if (this.isGAS) {
+          return new Promise((resolve, reject) => {
+            google.script.run
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .getTiendaData();
+          });
+        }
+
+        // 2. Modo externo (GitHub Pages -> llamada fetch con CORS a la Web App):
+        if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL.includes('script.google.com')) {
+          try {
+            const sep = GOOGLE_APPS_SCRIPT_URL.includes('?') ? '&' : '?';
+            const endpoint = GOOGLE_APPS_SCRIPT_URL + sep + 'action=getTiendaData';
+            const resp = await fetch(endpoint, { method: 'GET', mode: 'cors' });
+            if (resp.ok) {
+              const json = await resp.json();
+              if (json && json.success) return json;
+            }
+          } catch (fetchErr) {
+            console.warn('Aviso: Conexión externa diferida, cargando catálogo de contingencia:', fetchErr);
+          }
+        }
+
+        // 3. Fallback de contingencia:
+        return {
+          success: true,
+          productos: DEFAULT_CATALOG.slice(),
+          cupones: [
+            { codigo: 'BELLEZA10', tipo: 'PORCENTAJE', valor: 10, minimo_compra_bs: 100, fecha_caducidad: '2026-12-31', activo: true }
+          ]
+        };
+      },
+
+      async registrarPedidoGAS(pedidoData) {
+        if (this.isGAS) {
+          return new Promise((resolve, reject) => {
+            google.script.run
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .registrarPedido(pedidoData);
+          });
+        }
+
+        if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL.includes('script.google.com')) {
+          try {
+            const resp = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ action: 'registrarPedido', ...pedidoData })
+            });
+            if (resp.ok) {
+              const resJson = await resp.json();
+              if (resJson && resJson.id_pedido) return resJson;
+            }
+          } catch (e) {
+            console.warn('Aviso: Registro externo diferido:', e);
+          }
+        }
+
+        const d = new Date();
+        const diaMes = ('0' + d.getDate()).slice(-2) + ('0' + (d.getMonth() + 1)).slice(-2);
+        return { success: true, id_pedido: 'AOS-' + diaMes + '-001' };
+      }
+    };
+
+    const UI = {
+      init() {
+        this.bindEvents();
+        this.setupHeaderScroll();
+        this.setupVoiceSearch();
+        this.setupDraggableCart();
+        this.renderFavBadge();
+        this.renderCompBadge();
+        this.renderCartBadge();
+        safeCreateIcons();
+      },
+
+      setupHeaderScroll() {
+        let lastScrollY = 0;
+        const header = document.getElementById('mainHeader');
+        if (!header) return;
+
+        const handleScroll = () => {
+          const currentScrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+          if (currentScrollY > 70 && currentScrollY > lastScrollY + 4) {
+            header.style.transform = 'translateY(-100%)';
+          } else if (currentScrollY < lastScrollY - 4 || currentScrollY <= 70) {
+            header.style.transform = 'translateY(0)';
+          }
+          lastScrollY = currentScrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        document.addEventListener('scroll', handleScroll, { passive: true });
+      },
+
+      setupVoiceSearch() {
+        const setupBtn = (btnId, inputId) => {
+          const btn = document.getElementById(btnId);
+          const input = document.getElementById(inputId);
+          if (!btn || !input) return;
+
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          if (!SpeechRecognition) {
+            btn.style.display = 'none';
+            return;
+          }
+
+          const recognition = new SpeechRecognition();
+          recognition.lang = 'es-BO';
+          recognition.interimResults = false;
+
+          btn.addEventListener('click', () => {
+            btn.classList.add('text-red-500', 'animate-pulse');
+            recognition.start();
+          });
+
+          recognition.onresult = (e) => {
+            const transcript = e.results[0][0].transcript;
+            input.value = transcript;
+            Store.searchTerm = transcript.toLowerCase();
+            UI.handleSearchScroll();
+            UI.renderProducts();
+            btn.classList.remove('text-red-500', 'animate-pulse');
+          };
+
+          recognition.onerror = () => btn.classList.remove('text-red-500', 'animate-pulse');
+          recognition.onend = () => btn.classList.remove('text-red-500', 'animate-pulse');
+        };
+
+        setupBtn('voiceSearchBtn', 'searchInput');
+        setupBtn('voiceSearchBtnMobile', 'searchInputMobile');
+      },
+
+      handleSearchScroll() {
+        const cat = document.getElementById('catalogo');
+        if (cat) cat.scrollIntoView({ behavior: 'smooth' });
+      },
+
+      setupDraggableCart() {
+        const dragEl = document.getElementById('draggableCartBtn');
+        if (!dragEl) return;
+
+        let isDragging = false;
+        let hasMoved = false;
+        let startX = 0;
+        let startY = 0;
+        let initialLeft = 0;
+        let initialTop = 0;
+        const dragThreshold = 8; // px
+
+        const startDrag = (clientX, clientY) => {
+          const rect = dragEl.getBoundingClientRect();
+          startX = clientX;
+          startY = clientY;
+          initialLeft = rect.left;
+          initialTop = rect.top;
+          hasMoved = false;
+          isDragging = true;
+          dragEl.style.transition = 'none';
+        };
+
+        const moveDrag = (clientX, clientY) => {
+          if (!isDragging) return;
+          const dx = clientX - startX;
+          const dy = clientY - startY;
+
+          if (Math.abs(dx) > dragThreshold || Math.abs(dy) > dragThreshold) {
+            hasMoved = true;
+          }
+
+          if (hasMoved) {
+            const w = dragEl.offsetWidth || 160;
+            const h = dragEl.offsetHeight || 50;
+            const maxW = window.innerWidth - w - 8;
+            const maxH = window.innerHeight - h - 8;
+
+            let newX = initialLeft + dx;
+            let newY = initialTop + dy;
+
+            newX = Math.max(8, Math.min(maxW, newX));
+            newY = Math.max(64, Math.min(maxH, newY));
+
+            dragEl.style.left = newX + 'px';
+            dragEl.style.top = newY + 'px';
+            dragEl.style.bottom = 'auto';
+            dragEl.style.right = 'auto';
+          }
+        };
+
+        const endDrag = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          dragEl.style.transition = 'transform 0.15s ease-out';
+          if (!hasMoved) {
+            UI.openCart();
+          }
+        };
+
+        // Pointer Events modernos con captura de puntero
+        dragEl.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0 && e.pointerType === 'mouse') return;
+          try { dragEl.setPointerCapture(e.pointerId); } catch (_) {}
+          startDrag(e.clientX, e.clientY);
+        });
+
+        dragEl.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          moveDrag(e.clientX, e.clientY);
+        });
+
+        dragEl.addEventListener('pointerup', (e) => {
+          try { dragEl.releasePointerCapture(e.pointerId); } catch (_) {}
+          endDrag();
+        });
+
+        dragEl.addEventListener('pointercancel', () => {
+          isDragging = false;
+        });
+
+        // Touch nativo adicional para móviles
+        dragEl.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            startDrag(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+
+        dragEl.addEventListener('touchmove', (e) => {
+          if (isDragging && e.touches.length === 1) {
+            moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+          }
+        }, { passive: true });
+
+        dragEl.addEventListener('touchend', () => {
+          endDrag();
+        });
+
+        // Clic directo garantizado
+        dragEl.addEventListener('click', (e) => {
+          if (!hasMoved) {
+            UI.openCart();
+          }
+        });
+      },
+
+      showDbError(msg) {
+        const banner = document.getElementById('dbErrorBanner');
+        const msgEl = document.getElementById('dbErrorMsg');
+        if (banner && msgEl) {
+          msgEl.textContent = msg;
+          banner.classList.remove('hidden');
+          banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      },
+
+      showProductsSkeleton() {
+        const grid = document.getElementById('productsGrid');
+        if (!grid) return;
+        grid.innerHTML = Array(6).fill(0).map(() => `
+          <div class="bg-white border border-brand-border rounded-2xl overflow-hidden shadow-xs flex flex-col pointer-events-none transition-apple">
+            <div class="aspect-[4/3] skeleton-shimmer w-full"></div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div class="space-y-2">
+                <div class="h-4 skeleton-shimmer rounded w-3/4"></div>
+                <div class="h-3 skeleton-shimmer rounded w-full"></div>
+                <div class="h-3 skeleton-shimmer rounded w-2/3"></div>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-brand-border">
+                <div class="h-5 skeleton-shimmer rounded w-16"></div>
+                <div class="h-8 skeleton-shimmer rounded w-24"></div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      applyConfigUI(config) {
+        if (!config) return;
+        Store.configUI = config;
+
+        // Inyectar variables CSS en :root
+        const root = document.documentElement;
+        if (config.color_primario) root.style.setProperty('--color-primary', config.color_primario);
+        if (config.color_secundario) root.style.setProperty('--color-secondary', config.color_secundario);
+        if (config.color_cta) {
+          root.style.setProperty('--color-cta', config.color_cta);
+          const ctaBtn = document.getElementById('checkoutSubmitBtn');
+          if (ctaBtn) ctaBtn.style.backgroundColor = config.color_cta;
+        }
+        if (config.color_fondo) {
+          root.style.setProperty('--color-bg', config.color_fondo);
+          document.body.style.backgroundColor = config.color_fondo;
+        }
+        if (config.dimension_modal_ancho) root.style.setProperty('--modal-width', config.dimension_modal_ancho);
+        if (config.fuente_principal) {
+          root.style.setProperty('--font-main', config.fuente_principal);
+          document.body.style.fontFamily = `"${config.fuente_principal}", sans-serif`;
+        }
+
+        // Títulos y Textos Dinámicos
+        if (config.titulo_tienda) {
+          const el = document.getElementById('headerStoreTitle');
+          if (el) el.textContent = config.titulo_tienda;
+          document.title = config.titulo_tienda;
+        }
+        if (config.alerta_envios) {
+          const el = document.getElementById('txtAlertaEnvios');
+          if (el) el.textContent = config.alerta_envios;
+        }
+        if (config.texto_hero_principal) {
+          const el = document.getElementById('txtHeroTitulo');
+          if (el) el.textContent = config.texto_hero_principal;
+        }
+        if (config.texto_hero_subtitulo) {
+          const el = document.getElementById('txtHeroSubtitulo');
+          if (el) el.textContent = config.texto_hero_subtitulo;
+        }
+        if (config.texto_hero_descripcion) {
+          const el = document.getElementById('txtHeroDescripcion');
+          if (el) el.textContent = config.texto_hero_descripcion;
+        }
+        if (config.texto_boton_catalogo) {
+          const el = document.getElementById('btnExplorarCatalogo');
+          if (el) el.textContent = config.texto_boton_catalogo;
+        }
+        if (config.texto_boton_checkout) {
+          const el = document.getElementById('checkoutSubmitBtn');
+          if (el) {
+            const span = el.querySelector('span');
+            if (span) span.textContent = config.texto_boton_checkout;
+          }
+        }
+        if (config.link_fondo_hero) {
+          const img = document.getElementById('heroBannerImg');
+          if (img) img.src = config.link_fondo_hero;
+        }
+        if (config.direccion_fisica) {
+          const el = document.getElementById('txtDireccionFisica');
+          if (el) el.textContent = config.direccion_fisica;
+        }
+      },
+
+      renderCategoryTabs() {
+        const tabsContainer = document.getElementById('categoryTabs');
+        if (!tabsContainer) return;
+        
+        const rawCats = Store.productos.map(p => (p.categoria || '').trim()).filter(Boolean);
+        const uniqueCats = Array.from(new Set(rawCats));
+        if (uniqueCats.length === 0) return;
+
+        tabsContainer.innerHTML = '';
+
+        const makeBtn = (catKey, labelText) => {
+          const btn = document.createElement('button');
+          btn.setAttribute('data-cat', catKey);
+          btn.className = 'cat-btn px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer ' + 
+            (Store.currentCategory.toLowerCase() === catKey.toLowerCase() ? 'bg-brand-charcoal text-white' : 'text-brand-muted hover:text-brand-charcoal');
+          btn.textContent = labelText;
+          btn.onclick = () => {
+            Store.currentCategory = catKey;
+            document.querySelectorAll('#categoryTabs .cat-btn').forEach(b => {
+              b.classList.remove('bg-brand-charcoal', 'text-white');
+              b.classList.add('text-brand-muted');
+            });
+            btn.classList.add('bg-brand-charcoal', 'text-white');
+            btn.classList.remove('text-brand-muted');
+            UI.renderProducts();
+          };
+          return btn;
+        };
+
+        tabsContainer.appendChild(makeBtn('todas', 'Todas (' + Store.productos.length + ')'));
+        uniqueCats.forEach(cat => {
+          const count = Store.productos.filter(p => (p.categoria || '').trim().toLowerCase() === cat.toLowerCase()).length;
+          tabsContainer.appendChild(makeBtn(cat, cat + ' (' + count + ')'));
+        });
+      },
+
+      renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        const empty = document.getElementById('emptyState');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const prods = Array.isArray(Store.productos) ? Store.productos : [];
+        const curCat = String(Store.currentCategory || 'todas').trim().toLowerCase();
+        const search = String(Store.searchTerm || '').trim().toLowerCase();
+
+        const filtrados = prods.filter(p => {
+          if (!p) return false;
+          const pCat = String(p.categoria || '').trim().toLowerCase();
+          const matchCat = curCat === 'todas' || pCat === curCat || pCat.includes(curCat) || curCat.includes(pCat);
+          
+          const pNombre = String(p.nombre || '').toLowerCase();
+          const pDesc = String(p.descripcion || '').toLowerCase();
+          const matchSearch = !search || pNombre.includes(search) || pDesc.includes(search);
+          return matchCat && matchSearch;
+        });
+
+        if (filtrados.length === 0) {
+          if (empty) empty.classList.remove('hidden');
+          return;
+        } else {
+          if (empty) empty.classList.add('hidden');
+        }
+
+        filtrados.forEach((prod, index) => {
+          const card = document.createElement('div');
+          card.className = 'bg-white border border-brand-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group animate-fade-in-up';
+          card.style.animationDelay = (index * 60) + 'ms';
+
+          const isFav = Store.favoritos.includes(prod.id);
+          const isComp = Store.comparador.includes(prod.id);
+          const imgUrl = (prod.imagenes && prod.imagenes[0]) || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80';
+          let promoHtml = '';
+          const tag = (prod.etiqueta_promocional || prod.badge_promocional || '').toLowerCase().trim();
+          if (tag !== 'nada') {
+            if (tag === 'precio antes' || (!tag && prod.precio_antes)) {
+              if (prod.precio_antes) promoHtml = '<span class="text-[10px] text-brand-muted line-through font-mono">Antes: Bs. ' + prod.precio_antes + '</span>';
+            } else if (tag.includes('delivery')) {
+              promoHtml = '<span class="text-[9px] font-bold text-emerald-700 uppercase">DELIVERY GRATIS</span>';
+            } else if (tag.includes('cupon') || tag.includes('regalo')) {
+              promoHtml = '<span class="text-[9px] font-bold text-brand-gold uppercase">CUPÓN DE REGALO</span>';
+            } else if (tag.includes('nuevo')) {
+              promoHtml = '<span class="text-[9px] font-bold text-brand-rose uppercase">NUEVO PRODUCTO</span>';
+            }
+          }
+
+          card.innerHTML = \`
+            <div class="relative aspect-[4/3] bg-brand-cream overflow-hidden cursor-pointer" onclick="UI.openProductModal('\${prod.id}')">
+              <img src="\${imgUrl}" alt="\${prod.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <span class="absolute top-3 left-3 text-[11px] font-medium text-brand-muted bg-white/90 px-2 py-0.5 rounded-md">
+                \${prod.categoria}
+              </span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h3 class="font-bold text-sm text-brand-charcoal hover:text-brand-rose transition-colors cursor-pointer line-clamp-1" onclick="UI.openProductModal('\${prod.id}')">
+                  \${prod.nombre}
+                </h3>
+                <p class="text-xs text-brand-muted mt-1 line-clamp-2 leading-relaxed">\${prod.descripcion}</p>
+              </div>
+              <div class="flex items-center justify-between pt-2 border-t border-brand-border gap-2">
+                <div class="flex flex-col">
+                  \${promoHtml}
+                  <span class="text-sm font-mono font-bold text-brand-charcoal tabular-nums">Bs. \${prod.precio_bs}</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button title="Guardar en favoritos" onclick="event.stopPropagation(); UI.toggleFavorite('\${prod.id}')" class="p-2 rounded-lg border border-brand-border transition-colors \${isFav ? 'text-brand-rose bg-brand-blush/40' : 'text-brand-charcoal bg-white hover:text-brand-rose'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="\${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                  </button>
+                  <button title="Comparar producto" onclick="event.stopPropagation(); UI.toggleComparator('\${prod.id}')" class="p-2 rounded-lg border border-brand-border transition-colors \${isComp ? 'text-brand-gold bg-amber-50' : 'text-brand-charcoal bg-white hover:text-brand-gold'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+                  </button>
+                  <button onclick="event.stopPropagation(); UI.addToCartReorder('\${prod.id}', this)" class="px-3 py-2 bg-brand-charcoal text-white hover:bg-brand-rose text-xs font-semibold rounded-lg transition-colors flex items-center gap-1">
+                    <span>+ Bs. \${prod.precio_bs}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          \`;
+          grid.appendChild(card);
+        });
+
+        safeCreateIcons();
+      },
+
+      renderBodyRecommended() {
+        const container = document.getElementById('bodyRecommendedGrid');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const interactedIds = Array.from(new Set([...Store.favoritos, ...Store.comparador]));
+        const interactedProds = Store.productos.filter(p => interactedIds.includes(p.id));
+        const categories = Array.from(new Set(interactedProds.map(p => p.categoria)));
+
+        let list = [];
+        if (categories.length > 0) {
+          list = Store.productos.filter(p => categories.includes(p.categoria) && !interactedIds.includes(p.id)).slice(0, 4);
+        }
+        if (list.length === 0) {
+          list = Store.productos.slice(0, 4);
+        }
+
+        list.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'bg-white border border-brand-border rounded-xl p-3 flex flex-col justify-between space-y-2';
+          
+          let recBadge = '';
+          const ptag = (p.etiqueta_promocional || p.badge_promocional || '').toLowerCase().trim();
+          if (ptag !== 'nada') {
+            if (ptag === 'precio antes' || (!ptag && p.precio_antes)) {
+              if (p.precio_antes) recBadge = '<span class="text-[9px] text-brand-muted line-through font-mono">Antes: Bs. ' + p.precio_antes + '</span>';
+            } else if (ptag.includes('delivery')) {
+              recBadge = '<span class="text-[9px] font-bold text-emerald-700 uppercase">DELIVERY GRATIS</span>';
+            } else if (ptag.includes('cupon') || ptag.includes('regalo')) {
+              recBadge = '<span class="text-[9px] font-bold text-brand-gold uppercase">CUPÓN DE REGALO</span>';
+            } else if (ptag.includes('nuevo')) {
+              recBadge = '<span class="text-[9px] font-bold text-brand-rose uppercase">NUEVO PRODUCTO</span>';
+            }
+          }
+
+          item.innerHTML = \`
+            <img src="\${p.imagenes[0] || ''}" class="w-full aspect-square object-cover rounded-lg cursor-pointer" onclick="UI.openProductModal('\${p.id}')" />
+            <div>
+              \${recBadge}
+              <h4 class="text-xs font-bold text-brand-charcoal truncate mt-0.5 cursor-pointer" onclick="UI.openProductModal('\${p.id}')">\${p.nombre}</h4>
+              <span class="text-xs font-mono font-bold block mt-1">Bs. \${p.precio_bs}</span>
+            </div>
+            <button onclick="UI.addToCartReorder('\${p.id}', this)" class="w-full py-1.5 bg-brand-charcoal hover:bg-brand-rose text-white text-xs font-semibold rounded-lg transition-colors">
+              + Bs. \${p.precio_bs}
+            </button>
+          \`;
+          container.appendChild(item);
+        });
+
+        safeCreateIcons();
+      },
+
+      addToCartReorder(prodId, btnElement) {
+        const prod = Store.productos.find(p => p.id === prodId);
+        if (!prod) return;
+
+        const existing = Store.carrito.find(item => item.producto.id === prodId);
+        if (existing) {
+          existing.cantidad += 1;
+        } else {
+          Store.carrito.push({ producto: prod, cantidad: 1 });
+        }
+        Store.saveCart();
+
+        const prodIndex = Store.productos.findIndex(p => p.id === prodId);
+        if (prodIndex > -1) {
+          const removed = Store.productos.splice(prodIndex, 1)[0];
+          Store.productos.push(removed);
+          this.renderProducts();
+          this.renderBodyRecommended();
+        }
+      },
+
+      toggleFavorite(prodId) {
+        const idx = Store.favoritos.indexOf(prodId);
+        if (idx > -1) Store.favoritos.splice(idx, 1);
+        else Store.favoritos.push(prodId);
+        Store.saveFavs();
+        this.renderProducts();
+      },
+
+      toggleComparator(prodId) {
+        const idx = Store.comparador.indexOf(prodId);
+        if (idx > -1) Store.comparador.splice(idx, 1);
+        else {
+          if (Store.comparador.length >= 4) {
+            alert('Máximo 4 productos a comparar.');
+            return;
+          }
+          Store.comparador.push(prodId);
+        }
+        Store.saveComp();
+        this.renderProducts();
+      },
+
+      openProductModal(prodId) {
+        const index = Store.productos.findIndex(p => p.id === prodId);
+        if (index === -1) return;
+        Store.modalProductIndex = index;
+        Store.fsImageIndex = 0;
+        this.updateProductModalContent();
+        document.getElementById('productDetailModal').classList.remove('hidden');
+      },
+
+      updateProductModalContent() {
+        const prod = Store.productos[Store.modalProductIndex];
+        if (!prod) return;
+
+        const imgEl = document.getElementById('modalProductImage');
+        imgEl.src = (prod.imagenes && prod.imagenes[0]) || '';
+        imgEl.onclick = () => {
+          Store.fsImageIndex = 0;
+          document.getElementById('fullscreenImageEl').src = imgEl.src;
+          document.getElementById('fullscreenImageViewer').classList.remove('hidden');
+        };
+
+        document.getElementById('modalProductCategory').textContent = prod.categoria;
+        const badgeEl = document.getElementById('modalProductBadge');
+        const tag = (prod.etiqueta_promocional || prod.badge_promocional || '').toLowerCase().trim();
+        badgeEl.innerHTML = '';
+        if (tag !== 'nada') {
+          if (tag === 'precio antes' || (!tag && prod.precio_antes)) {
+            if (prod.precio_antes) badgeEl.innerHTML = '<span class="text-xs text-brand-muted line-through font-mono">Bs. ' + prod.precio_antes + '</span>';
+          } else if (tag.includes('delivery')) {
+            badgeEl.innerHTML = '<span class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">DELIVERY GRATIS</span>';
+          } else if (tag.includes('cupon') || tag.includes('regalo')) {
+            badgeEl.innerHTML = '<span class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">CUPÓN DE REGALO</span>';
+          } else if (tag.includes('nuevo')) {
+            badgeEl.innerHTML = '<span class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-brand-blush text-brand-rose border border-brand-border">NUEVO PRODUCTO</span>';
+          }
+        }
+
+        document.getElementById('modalProductPrice').textContent = 'Bs. ' + prod.precio_bs;
+        document.getElementById('modalProductDescription').textContent = prod.descripcion_larga || prod.descripcion;
+        
+        // Botón renombrado a: + 'precio_de_producto'
+        document.getElementById('modalAddPriceText').textContent = '+ Bs. ' + prod.precio_bs;
+
+        const addBtn = document.getElementById('modalAddToCartBtn');
+        addBtn.onclick = () => {
+          this.addToCartReorder(prod.id, addBtn);
+          Store.modalProductIndex = (Store.modalProductIndex + 1) % Store.productos.length;
+          this.updateProductModalContent();
+        };
+
+        safeCreateIcons();
+      },
+
+      openCart() {
+        const drawer = document.getElementById('cartDrawer');
+        if (drawer) drawer.classList.remove('hidden');
+        this.renderCartItems();
+      },
+
+      closeCart() {
+        const drawer = document.getElementById('cartDrawer');
+        if (drawer) drawer.classList.add('hidden');
+      },
+
+      openFavorites() {
+        this.renderFavorites();
+        const modal = document.getElementById('favoritesModal');
+        if (modal) modal.classList.remove('hidden');
+      },
+
+      closeFavorites() {
+        const modal = document.getElementById('favoritesModal');
+        if (modal) modal.classList.add('hidden');
+      },
+
+      renderFavorites() {
+        const container = document.getElementById('favoritesList');
+        const countBadge = document.getElementById('favModalCount');
+        if (countBadge) countBadge.textContent = Store.favoritos.length;
+        if (!container) return;
+        container.innerHTML = '';
+
+        const favProds = Store.productos.filter(p => Store.favoritos.includes(p.id));
+        if (favProds.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 px-4 space-y-3">
+              <div class="w-12 h-12 mx-auto rounded-full bg-brand-blush/60 text-brand-rose flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </div>
+              <p class="text-sm font-bold text-brand-charcoal">No tienes favoritos guardados</p>
+              <p class="text-xs text-brand-muted max-w-xs mx-auto">Toca el corazón en cualquier producto del catálogo para guardarlo en tu lista personal.</p>
+            </div>
+          `;
+          return;
+        }
+
+        favProds.forEach(p => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center gap-3 bg-brand-cream/60 p-3 rounded-xl border border-brand-border hover:border-brand-rose transition-colors';
+          const imgUrl = (p.imagenes && p.imagenes[0]) || '';
+          row.innerHTML = `
+            <img src="${imgUrl}" alt="${p.nombre}" class="w-14 h-14 object-cover rounded-lg cursor-pointer shrink-0" onclick="UI.closeFavorites(); UI.openProductModal('${p.id}')" />
+            <div class="flex-1 min-w-0">
+              <span class="text-[10px] uppercase font-semibold text-brand-rose tracking-wider block">${p.categoria}</span>
+              <h4 class="text-xs font-bold text-brand-charcoal truncate cursor-pointer hover:text-brand-rose" onclick="UI.closeFavorites(); UI.openProductModal('${p.id}')">${p.nombre}</h4>
+              <span class="text-xs font-mono font-bold text-brand-charcoal block mt-0.5">Bs. ${p.precio_bs}</span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="UI.addToCartReorder('${p.id}', this)" title="Agregar al carrito" class="px-2.5 py-1.5 bg-brand-charcoal hover:bg-brand-rose text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1">
+                <span>+ Bs. ${p.precio_bs}</span>
+              </button>
+              <button onclick="UI.toggleFavorite('${p.id}'); UI.renderFavorites();" title="Eliminar de favoritos" class="p-1.5 text-brand-muted hover:text-red-500 rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      },
+
+      openComparator() {
+        this.renderComparator();
+        const modal = document.getElementById('comparatorModal');
+        if (modal) modal.classList.remove('hidden');
+      },
+
+      closeComparator() {
+        const modal = document.getElementById('comparatorModal');
+        if (modal) modal.classList.add('hidden');
+      },
+
+      renderComparator() {
+        const container = document.getElementById('comparatorContent');
+        const countBadge = document.getElementById('compModalCount');
+        if (countBadge) countBadge.textContent = Store.comparador.length;
+        if (!container) return;
+        container.innerHTML = '';
+
+        const compProds = Store.productos.filter(p => Store.comparador.includes(p.id));
+        if (compProds.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 px-4 space-y-3">
+              <div class="w-12 h-12 mx-auto rounded-full bg-amber-50 text-brand-gold flex items-center justify-center border border-amber-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+              </div>
+              <p class="text-sm font-bold text-brand-charcoal">No hay productos seleccionados para comparar</p>
+              <p class="text-xs text-brand-muted max-w-sm mx-auto">Selecciona hasta 4 productos haciendo clic en el icono de la balanza en el catálogo para verlos frente a frente.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const grid = document.createElement('div');
+        const colsCount = Math.min(compProds.length, 4);
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-' + colsCount + ' gap-4';
+
+        compProds.forEach(p => {
+          const col = document.createElement('div');
+          col.className = 'bg-brand-cream/40 border border-brand-border rounded-xl p-4 flex flex-col justify-between space-y-3 relative';
+          const imgUrl = (p.imagenes && p.imagenes[0]) || '';
+          
+          let promoBadge = '';
+          const tag = (p.etiqueta_promocional || p.badge_promocional || '').toLowerCase().trim();
+          if (tag && tag !== 'nada') {
+            promoBadge = '<span class="text-[9px] font-bold text-brand-rose uppercase block mb-1">' + tag + '</span>';
+          }
+
+          col.innerHTML = `
+            <button onclick="UI.toggleComparator('${p.id}'); UI.renderComparator();" title="Quitar de la comparación" class="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-red-50 text-brand-muted hover:text-red-500 rounded-full shadow-2xs transition-colors z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div class="space-y-2">
+              <img src="${imgUrl}" alt="${p.nombre}" class="w-full aspect-square object-cover rounded-lg cursor-pointer bg-white" onclick="UI.closeComparator(); UI.openProductModal('${p.id}')" />
+              <span class="text-[10px] uppercase font-semibold text-brand-rose tracking-wider block">${p.categoria}</span>
+              <h4 class="text-xs font-bold text-brand-charcoal cursor-pointer hover:text-brand-rose line-clamp-2" onclick="UI.closeComparator(); UI.openProductModal('${p.id}')">${p.nombre}</h4>
+              ${promoBadge}
+              <div class="pt-1 border-t border-brand-border/60">
+                <span class="text-sm font-mono font-bold text-brand-charcoal">Bs. ${p.precio_bs}</span>
+                ${p.precio_antes ? '<span class="text-[10px] text-brand-muted line-through font-mono ml-2">Antes: Bs. ' + p.precio_antes + '</span>' : ''}
+              </div>
+              <p class="text-[11px] text-brand-muted leading-relaxed line-clamp-3">${p.descripcion || ''}</p>
+            </div>
+            <div class="pt-2 border-t border-brand-border/60">
+              <button onclick="UI.addToCartReorder('${p.id}', this)" class="w-full py-2 bg-brand-charcoal hover:bg-brand-rose text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1 shadow-2xs">
+                <span>+ Bs. ${p.precio_bs}</span>
+              </button>
+            </div>
+          `;
+          grid.appendChild(col);
+        });
+
+        container.appendChild(grid);
+      },
+
+      renderCartBadge() {
+        const totalItems = Store.carrito.reduce((sum, i) => sum + i.cantidad, 0);
+        const subtotal = Store.carrito.reduce((sum, i) => sum + (i.producto.precio_bs * i.cantidad), 0);
+        
+        const countBadge = document.getElementById('cartCountBadge');
+        if (countBadge) countBadge.textContent = totalItems;
+        
+        const subBadge = document.getElementById('cartSubtotalBadge');
+        if (subBadge) subBadge.textContent = 'Bs. ' + subtotal;
+
+        const headerCartBadge = document.getElementById('headerCartBadge');
+        if (headerCartBadge) {
+          headerCartBadge.textContent = totalItems;
+          headerCartBadge.classList.toggle('hidden', totalItems === 0);
+        }
+      },
+
+      renderFavBadge() {
+        const badge = document.getElementById('favCountBadge');
+        if (badge) {
+          badge.textContent = Store.favoritos.length;
+          badge.classList.toggle('hidden', Store.favoritos.length === 0);
+        }
+      },
+
+      renderCompBadge() {
+        const badge = document.getElementById('compCountBadge');
+        if (badge) {
+          badge.textContent = Store.comparador.length;
+          badge.classList.toggle('hidden', Store.comparador.length === 0);
+        }
+      },
+
+      renderCartItems() {
+        const container = document.getElementById('cartItemsContainer');
+        container.innerHTML = '';
+
+        if (Store.carrito.length === 0) {
+          container.innerHTML = '<div class="text-center py-12 text-brand-muted"><p class="text-xs">Tu carrito está vacío.</p></div>';
+          this.updateCartTotals();
+          return;
+        }
+
+        Store.carrito.forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center gap-3 bg-brand-cream/60 p-2.5 rounded-xl border border-brand-border';
+          row.innerHTML = \`
+            <img src="\${item.producto.imagenes[0] || ''}" class="w-12 h-12 object-cover rounded-lg" />
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-semibold truncate">\${item.producto.nombre}</h4>
+              <span class="text-xs font-mono font-bold text-brand-rose">Bs. \${item.producto.precio_bs}</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="UI.changeQuantity(\${idx}, -1)" class="w-6 h-6 bg-white border rounded text-xs font-bold">-</button>
+              <span class="text-xs font-mono font-bold w-4 text-center">\${item.cantidad}</span>
+              <button onclick="UI.changeQuantity(\${idx}, 1)" class="w-6 h-6 bg-white border rounded text-xs font-bold">+</button>
+              <button onclick="UI.removeFromCart(\${idx})" class="p-1 text-brand-muted hover:text-red-500 ml-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+          \`;
+          container.appendChild(row);
+        });
+
+        this.updateCartTotals();
+        safeCreateIcons();
+      },
+
+      changeQuantity(index, delta) {
+        if (!Store.carrito[index]) return;
+        Store.carrito[index].cantidad += delta;
+        if (Store.carrito[index].cantidad <= 0) Store.carrito.splice(index, 1);
+        Store.saveCart();
+      },
+
+      removeFromCart(index) {
+        Store.carrito.splice(index, 1);
+        Store.saveCart();
+      },
+
+      updateCartTotals() {
+        const subtotal = Store.carrito.reduce((sum, i) => sum + (i.producto.precio_bs * i.cantidad), 0);
+        document.getElementById('summarySubtotal').textContent = 'Bs. ' + subtotal;
+
+        let discount = 0;
+        if (Store.cuponAplicado) {
+          discount = Store.cuponAplicado.tipo === 'PORCENTAJE' 
+            ? Math.round(subtotal * (Store.cuponAplicado.valor / 100))
+            : Math.min(Store.cuponAplicado.valor, subtotal);
+        }
+
+        const discountRow = document.getElementById('summaryDiscountRow');
+        if (discount > 0) {
+          discountRow.classList.remove('hidden');
+          document.getElementById('summaryDiscount').textContent = '-Bs. ' + discount;
+        } else {
+          discountRow.classList.add('hidden');
+        }
+
+        // Sin cargos de envío
+        document.getElementById('summaryTotal').textContent = 'Bs. ' + Math.max(0, subtotal - discount);
+      },
+
+      bindEvents() {
+        // Categorías
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+              b.classList.remove('bg-brand-charcoal', 'text-white');
+              b.classList.add('text-brand-muted');
+            });
+            btn.classList.add('bg-brand-charcoal', 'text-white');
+            btn.classList.remove('text-brand-muted');
+            Store.currentCategory = btn.getAttribute('data-cat');
+            UI.renderProducts();
+          });
+        });
+
+        // Búsqueda con auto-scroll a catálogo
+        const bindSearch = (id) => {
+          const input = document.getElementById(id);
+          if (input) {
+            input.addEventListener('input', (e) => {
+              Store.searchTerm = e.target.value.toLowerCase();
+              if (Store.searchTerm.length > 0) UI.handleSearchScroll();
+              UI.renderProducts();
+            });
+          }
+        };
+        bindSearch('searchInput');
+        bindSearch('searchInputMobile');
+
+        // Toggle búsqueda móvil
+        const toggleMobile = document.getElementById('toggleMobileSearch');
+        if (toggleMobile) {
+          toggleMobile.addEventListener('click', () => {
+            document.getElementById('mobileSearchBar').classList.toggle('hidden');
+          });
+        }
+
+        // Carrito drawer
+        document.getElementById('closeCartBtn').addEventListener('click', () => UI.closeCart());
+        document.getElementById('cartBackdrop').addEventListener('click', () => UI.closeCart());
+
+        // Modal producto
+        document.getElementById('closeProductModalBtn').addEventListener('click', () => {
+          document.getElementById('productDetailModal').classList.add('hidden');
+        });
+        document.getElementById('modalPrevProductBtn').addEventListener('click', () => {
+          Store.modalProductIndex = (Store.modalProductIndex - 1 + Store.productos.length) % Store.productos.length;
+          UI.updateProductModalContent();
+        });
+        document.getElementById('modalNextProductBtn').addEventListener('click', () => {
+          Store.modalProductIndex = (Store.modalProductIndex + 1) % Store.productos.length;
+          UI.updateProductModalContent();
+        });
+
+        // Fullscreen Image Controls con Carrusel
+        document.getElementById('fsCloseBtn').addEventListener('click', () => {
+          document.getElementById('fullscreenImageViewer').classList.add('hidden');
+        });
+        document.getElementById('fsPrevBtn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const prod = Store.productos[Store.modalProductIndex];
+          if (!prod || !prod.imagenes.length) return;
+          Store.fsImageIndex = (Store.fsImageIndex - 1 + prod.imagenes.length) % prod.imagenes.length;
+          document.getElementById('fullscreenImageEl').src = prod.imagenes[Store.fsImageIndex];
+        });
+        document.getElementById('fsNextBtn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          const prod = Store.productos[Store.modalProductIndex];
+          if (!prod || !prod.imagenes.length) return;
+          Store.fsImageIndex = (Store.fsImageIndex + 1) % prod.imagenes.length;
+          document.getElementById('fullscreenImageEl').src = prod.imagenes[Store.fsImageIndex];
+        });
+
+        // Touch swipe para carrusel fullscreen
+        let touchX = null;
+        const fsContainer = document.getElementById('fsTouchContainer');
+        if (fsContainer) {
+          fsContainer.addEventListener('touchstart', (e) => {
+            touchX = e.touches[0].clientX;
+          }, { passive: true });
+          fsContainer.addEventListener('touchend', (e) => {
+            if (touchX === null) return;
+            const diff = touchX - e.changedTouches[0].clientX;
+            if (diff > 40) document.getElementById('fsNextBtn').click();
+            else if (diff < -40) document.getElementById('fsPrevBtn').click();
+            touchX = null;
+          }, { passive: true });
+        }
+
+        // Cambio de método de envío: ÚNICAMENTE departamental muestra campos opcionales
+        const shippingSelect = document.getElementById('shippingSelect');
+        if (shippingSelect) {
+          shippingSelect.addEventListener('change', (e) => {
+            const depField = document.getElementById('departamentalFields');
+            if (depField) {
+              if (e.target.value === 'departamental') {
+                depField.classList.remove('hidden');
+              } else {
+                depField.classList.add('hidden');
+              }
+            }
+          });
+        }
+
+        // Cupones
+        document.getElementById('applyCouponBtn').addEventListener('click', () => {
+          const code = document.getElementById('couponInput').value.trim().toUpperCase();
+          const subtotal = Store.carrito.reduce((sum, i) => sum + (i.producto.precio_bs * i.cantidad), 0);
+          const msg = document.getElementById('couponMessage');
+
+          const found = Store.cupones.find(c => c.codigo === code && c.activo);
+          if (!found) {
+            msg.textContent = 'Cupón no válido.';
+            msg.className = 'text-[11px] text-red-600 block';
+            return;
+          }
+          Store.cuponAplicado = found;
+          msg.textContent = '¡Cupón ' + found.codigo + ' aplicado!';
+          msg.className = 'text-[11px] text-emerald-600 block';
+          UI.updateCartTotals();
+        });
+
+        // QR Zoom
+        document.getElementById('openQRZoomBtn').addEventListener('click', () => {
+          document.getElementById('qrModal').classList.remove('hidden');
+        });
+        document.getElementById('closeQRModalBtn').addEventListener('click', () => {
+          document.getElementById('qrModal').classList.add('hidden');
+        });
+
+        // Finalizar Pedido (Sin pedir Nombre ni Celular)
+        document.getElementById('checkoutSubmitBtn').addEventListener('click', () => {
+          UI.submitOrder();
+        });
+
+        // Modales y Cajones
+        const btnFav = document.getElementById('btnOpenFavorites');
+        if (btnFav) btnFav.addEventListener('click', () => UI.openFavorites());
+
+        const closeFav = document.getElementById('closeFavoritesBtn');
+        if (closeFav) closeFav.addEventListener('click', () => UI.closeFavorites());
+
+        const favBackdrop = document.getElementById('favBackdrop');
+        if (favBackdrop) favBackdrop.addEventListener('click', () => UI.closeFavorites());
+
+        const btnComp = document.getElementById('btnOpenComparator');
+        if (btnComp) btnComp.addEventListener('click', () => UI.openComparator());
+
+        const closeComp = document.getElementById('closeComparatorBtn');
+        if (closeComp) closeComp.addEventListener('click', () => UI.closeComparator());
+
+        const compBackdrop = document.getElementById('compBackdrop');
+        if (compBackdrop) compBackdrop.addEventListener('click', () => UI.closeComparator());
+
+        const btnHeaderCart = document.getElementById('btnOpenCartHeader');
+        if (btnHeaderCart) btnHeaderCart.addEventListener('click', () => UI.openCart());
+
+        const closeSuccess = document.getElementById('closeSuccessModalBtn');
+        if (closeSuccess) closeSuccess.addEventListener('click', () => {
+          document.getElementById('orderSuccessModal').classList.add('hidden');
+        });
+
+        // Cerrar modales con tecla Escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            UI.closeFavorites();
+            UI.closeComparator();
+            UI.closeCart();
+            const prodModal = document.getElementById('productDetailModal');
+            if (prodModal) prodModal.classList.add('hidden');
+            const qrModal = document.getElementById('qrModal');
+            if (qrModal) qrModal.classList.add('hidden');
+            const fsViewer = document.getElementById('fullscreenImageViewer');
+            if (fsViewer) fsViewer.classList.add('hidden');
+          }
+        });
+      },
+
+      async submitOrder() {
+        const shippingSelect = document.getElementById('shippingSelect');
+        const tipo = shippingSelect ? shippingSelect.value : 'tienda';
+
+        let destino = '';
+        let nombre = '';
+        let celular = '';
+        let transportadora = '';
+
+        if (tipo === 'departamental') {
+          const destEl = document.getElementById('depDestinoInput');
+          const nomEl = document.getElementById('depNombreInput');
+          const celEl = document.getElementById('depCelularInput');
+          const transEl = document.getElementById('depTransporteInput');
+          if (destEl) destino = destEl.value.trim();
+          if (nomEl) nombre = nomEl.value.trim();
+          if (celEl) celular = celEl.value.trim();
+          if (transEl) transportadora = transEl.value.trim();
+        }
+
+        const subtotal = Store.carrito.reduce((sum, i) => sum + (i.producto.precio_bs * i.cantidad), 0);
+        let discount = 0;
+        if (Store.cuponAplicado) {
+          discount = Store.cuponAplicado.tipo === 'PORCENTAJE' 
+            ? Math.round(subtotal * (Store.cuponAplicado.valor / 100))
+            : Math.min(Store.cuponAplicado.valor, subtotal);
+        }
+        const total = Math.max(0, subtotal - discount);
+
+        // Modalidad legible
+        let shippingText = 'Recojo en Tienda (Calle Brasil e/ Antzana)';
+        if (tipo === 'delivery_cba') {
+          shippingText = 'Delivery Cochabamba Cercado';
+        } else if (tipo === 'casillero') {
+          shippingText = 'Envío a Casillero';
+        } else if (tipo === 'departamental') {
+          shippingText = 'Envío Departamental (Flota / Transporte)';
+        }
+
+        // Registrar pedido en Google Apps Script
+        const pedidoPayload = {
+          subtotal_bs: subtotal,
+          descuento_bs: discount,
+          total_bs: total,
+          tipo_envio: tipo,
+          destino: destino,
+          nombre_cliente: nombre,
+          celular_cliente: celular,
+          transportadora: transportadora,
+          items: Store.carrito.map(i => ({
+            id: i.producto.id,
+            nombre: i.producto.nombre,
+            precio_bs: i.producto.precio_bs,
+            cantidad: i.cantidad,
+            subtotal: i.producto.precio_bs * i.cantidad
+          }))
+        };
+
+        let orderId = 'AOS-' + Date.now().toString().slice(-6);
+        try {
+          const res = await GAS.registrarPedidoGAS(pedidoPayload);
+          if (res && res.id_pedido) {
+            orderId = res.id_pedido;
+          }
+        } catch (e) {
+          console.warn('Registro directo GAS diferido:', e);
+        }
+
+        let waText = '✨ *NUEVO PEDIDO EN AOS BEAUTY* ✨\n';
+        waText += '🆔 *Código:* ' + orderId + '\n';
+        waText += '📦 *Modalidad:* ' + shippingText + '\n';
+        if (tipo === 'departamental') {
+          if (destino) waText += '📍 *Destino:* ' + destino + '\n';
+          if (nombre) waText += '👤 *Destinatario:* ' + nombre + '\n';
+          if (celular) waText += '📱 *Celular:* ' + celular + '\n';
+          if (transportadora) waText += '🚛 *Transporte:* ' + transportadora + '\n';
+        }
+        waText += '--------------------------\n';
+        waText += '🛍️ *PRODUCTOS SELECCIONADOS:*\n';
+        Store.carrito.forEach((it, idx) => {
+          waText += (idx + 1) + '. ' + it.cantidad + 'x ' + it.producto.nombre + '\n   ↳ Bs. ' + (it.producto.precio_bs * it.cantidad) + ' (Bs. ' + it.producto.precio_bs + ' c/u)\n';
+        });
+        waText += '--------------------------\n';
+        waText += 'Subtotal: Bs. ' + subtotal + '\n';
+        if (discount > 0) {
+          waText += 'Descuento (' + (Store.cuponAplicado ? Store.cuponAplicado.codigo : '') + '): -Bs. ' + discount + '\n';
+        }
+        waText += 'Envío: Bs. 0 (Sin recargo)\n';
+        waText += '💰 *TOTAL A PAGAR: Bs. ${total}*\n';
+        waText += '--------------------------\n';
+        waText += 'Adjunto mi comprobante de pago por QR. ¡Por favor confirmar mi pedido!';
+
+        const waNumber = (Store.configUI && Store.configUI.whatsapp_numero) ? Store.configUI.whatsapp_numero : '59161608110';
+        window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(waText), '_blank');
+        
+        Store.carrito = [];
+        Store.saveCart();
+        UI.closeCart();
+
+        document.getElementById('orderIdText').textContent = orderId;
+        const receiptBox = document.getElementById('orderReceiptBox');
+        if (receiptBox) {
+          receiptBox.innerHTML = `
+            <div><strong>ID:</strong> ${orderId}</div>
+            <div><strong>Modalidad:</strong> ${shippingText}</div>
+            ${tipo === 'departamental' && destino ? `<div><strong>Destino:</strong> ${destino}</div>` : ''}
+            ${tipo === 'departamental' && nombre ? `<div><strong>Destinatario:</strong> ${nombre}</div>` : ''}
+            ${tipo === 'departamental' && celular ? `<div><strong>Celular:</strong> ${celular}</div>` : ''}
+            ${tipo === 'departamental' && transportadora ? `<div><strong>Transporte:</strong> ${transportadora}</div>` : ''}
+            <div><strong>Total:</strong> Bs. ${total}</div>
+          `;
+        }
+        document.getElementById('orderSuccessModal').classList.remove('hidden');
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        UI.init();
+        // Renderizar Skeleton Screen con Shimmer inmediatamente (CLS = 0)
+        UI.showProductsSkeleton();
+      } catch (errInit) {
+        console.error('Error al inicializar UI:', errInit);
+      }
+
+      try {
+        const data = await GAS.fetchTiendaData();
+        if (data && data.success) {
+          Store.productos = (data.productos && data.productos.length > 0) ? data.productos : DEFAULT_CATALOG.slice();
+          Store.cupones = (data.cupones && data.cupones.length > 0) ? data.cupones : Store.cupones;
+          if (data.configUI) {
+            UI.applyConfigUI(data.configUI);
+          }
+          UI.renderCategoryTabs();
+          UI.renderProducts();
+          UI.renderBodyRecommended();
+        } else {
+          const errMsg = (data && data.error) 
+            ? data.error 
+            : 'No se pudo conectar con la base de datos de Google Sheets. Verifica los IDs en CONFIG de Codigo.gs.';
+          UI.showDbError(errMsg);
+          if (data && data.productos && data.productos.length > 0) {
+            Store.productos = data.productos;
+          } else {
+            Store.productos = DEFAULT_CATALOG.slice();
+          }
+          UI.renderCategoryTabs();
+          UI.renderProducts();
+          UI.renderBodyRecommended();
+        }
+      } catch (err) {
+        console.error('Error al cargar datos:', err);
+        UI.showDbError(err && err.message ? err.message : String(err));
+        Store.productos = DEFAULT_CATALOG.slice();
+        UI.renderCategoryTabs();
+        UI.renderProducts();
+      }
+    });
+  </script>
+</body>
+</html>
